@@ -9,8 +9,20 @@ final pokemonDataProvider =
   HTTPService _httpService = GetIt.instance.get<HTTPService>();
   Response? res = await _httpService.get(url);
 
-  if (res != null && res.data != null) {
+  if (res != null && res.data != 
+  null) {
     return Pokemon.fromJson(res.data!);
   }
   return null;
 });
+
+final favoritePokemonsProvider =
+    StateNotifierProvider((ref) => FavoritePokemonsProvider([]));
+
+class FavoritePokemonsProvider extends StateNotifier<List<String>> {
+  FavoritePokemonsProvider(super._state) {
+    _setup();
+  }
+
+  Future<void> _setup() async {}
+}

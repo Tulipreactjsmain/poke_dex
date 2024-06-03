@@ -7,10 +7,15 @@ import 'package:skeletonizer/skeletonizer.dart';
 class PokemonListTile extends ConsumerWidget {
   final String pokemonURL;
 
-  const PokemonListTile({super.key, required this.pokemonURL});
+  late FavoritePokemonsProvider _favoritePokemonsProvider;
+  late List<String> _favoritePokemons;
+
+  PokemonListTile({super.key, required this.pokemonURL});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _favoritePokemonsProvider = ref.watch(favoritePokemonsProvider.notifier);
+
     final AsyncValue<Pokemon?> pokemon =
         ref.watch(pokemonDataProvider(pokemonURL));
     return pokemon.when(
@@ -33,9 +38,19 @@ class PokemonListTile extends ConsumerWidget {
     return Skeletonizer(
       enabled: isLoading,
       child: ListTile(
+        leading: pokemon != null
+            ? CircleAvatar(
+                backgroundImage: NetworkImage(pokemon.sprites!.frontDefault!),
+              )
+            : const CircleAvatar(),
         title: Text(pokemon != null
             ? pokemon.name!.toUpperCase()
             : "Currently loading..."),
+        subtitle: Text("Has ${pokemon?.moves?.length.toString() ?? 0} moves"),
+        trailing: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.favorite_border),
+        ),
       ),
     );
   }
