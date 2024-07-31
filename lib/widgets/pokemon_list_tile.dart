@@ -4,17 +4,18 @@ import 'package:poke_dex/models/pokemon.dart';
 import 'package:poke_dex/providers/pokemon_data_providers.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+// ignore: must_be_immutable
 class PokemonListTile extends ConsumerWidget {
   final String pokemonURL;
 
-  late FavoritePokemonsController _favoritePokemonsProvider;
+  late FavoritePokemonsController _favoritePokemonsController;
   late List<String> _favoritePokemons;
 
   PokemonListTile({super.key, required this.pokemonURL});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _favoritePokemonsProvider = ref.watch(favoritePokemonsProvider.notifier);
+    _favoritePokemonsController = ref.watch(favoritePokemonsProvider.notifier);
     _favoritePokemons = ref.watch(favoritePokemonsProvider);
 
     final AsyncValue<Pokemon?> pokemon =
@@ -51,11 +52,10 @@ class PokemonListTile extends ConsumerWidget {
         trailing: IconButton(
           onPressed: () {
             if (_favoritePokemons.contains(pokemonURL)) {
-              _favoritePokemonsProvider.removeFavoritePokemon(pokemonURL);
+              _favoritePokemonsController.removeFavoritePokemon(pokemonURL);
             } else {
-              _favoritePokemonsProvider.addFavoritePokemon(pokemonURL);
+              _favoritePokemonsController.addFavoritePokemon(pokemonURL);
             }
-            // _favoritePokemonsProvider.update(_favoritePokemons);
           },
           icon: Icon(_favoritePokemons.contains(pokemonURL)
               ? Icons.favorite
